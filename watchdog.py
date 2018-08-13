@@ -22,17 +22,6 @@ to = cfg.get('notification','to')
 subject = cfg.get('notification','subject')
 body = cfg.get('notification','body')
 
-run_as_daemon = False
-print run_as_daemon
-print logPath
-print time 
-print retry
-print service
-print mail_user
-print mail_password
-print to
-print subject
-print body
 
 host = os.uname()[1]
 #Setup logging file
@@ -95,7 +84,6 @@ def send_mail(mail_user,mail_password,body,subject,to):
     """ % (sent_from, to, subject, body)
     try:
         server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-        #server.ehlo()
         server.login(mail_user, mail_password)
         server.sendmail(sent_from, to, email_text)
         server.close()
