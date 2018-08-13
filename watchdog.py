@@ -24,17 +24,6 @@ subject = cfg.get('notification','subject')
 body = cfg.get('notification','body')
 
 
-print run_as_daemon
-print logPath
-print time 
-print retry
-print service
-print mail_user
-print mail_password
-print to
-print subject
-print body
-
 host = os.uname()[1]
 #Setup logging file
 if not os.path.exists(logPath):
