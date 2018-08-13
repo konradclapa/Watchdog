@@ -40,12 +40,12 @@ def watchdog(service, retry, freq):
             write_log("INFO", 'Attempt nr %d to start %s.' % (i,service))
             start_service(service)
             if (is_running(service)):
-                resulttext = 'Attempt nr %d to start service %s host: %s was SUCCESFULL' % (i,service,host)
+                resulttext = 'Attempt nr %d to start service %s host: %s was SUCCESSFUL' % (i,service,host)
                 write_log("INFO", resulttext)
                 send_mail(mail_user,mail_password,resulttext,subject,to)
                 break
             else:
-                resulttext = 'Attempt nr %d to start service %s host: %s was UNSUCCESFULL' % (i,service,host)
+                resulttext = 'Attempt nr %d to start service %s host: %s was UNSUCCESSFUL' % (i,service,host)
                 write_log("ERRROR", resulttext)
                 send_mail(mail_user,mail_password,resulttext,subject,to)
 #Sleep for t seconds
