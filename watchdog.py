@@ -58,13 +58,11 @@ def watchdog(service, retry, freq):
 
 #is_running function checks if service is running           
 def is_running(service):
-    print ("Starting function is_running with paramter:" + service)
     cmd = 'service %s status' % (service)
     proc = subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE)
     serviceStatus =  proc.communicate()[0]
-    print serviceStatus
     if "%s is running" %(service) in serviceStatus:
-        print "Service is running"
+        print "INFO: Service is running"
         return True
     else:
         resulttext = 'Service %s is not running on host: %s' % (service,host)
@@ -77,7 +75,7 @@ def is_running(service):
 
 #startService function attemts to start a service
 def startService(service):
-    print 'Attemtping to start'
+    print 'INFO: Attemtping to start'
     cmd = 'service %s start' % (service)
     proc = subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE)
     proc.communicate()
@@ -99,9 +97,9 @@ def send_mail(mail_user,mail_password,body,subject,to):
         server.login(mail_user, mail_password)
         server.sendmail(sent_from, to, email_text)
         server.close()
-        print 'Email sent!'
+        print 'INFO: Email sent!'
     except:
-        print 'Something went wrong...'
+        print 'ERROR: Something went wrong...'
 
 #run_daemonized_watchdog functions runs watchdog in daemon mode
 def run_daemonized_watchdog():
