@@ -38,7 +38,7 @@ def watchdog(service, retry, freq):
         while i < retry:
             i = i + 1
             write_log("INFO", 'Attempt nr %d to start %s.' % (i,service))
-            startService(service)
+            start_service(service)
             if (is_running(service)):
                 resulttext = 'Attempt nr %d to start service %s host: %s was SUCCESFULL' % (i,service,host)
                 write_log("INFO", resulttext)
@@ -68,8 +68,8 @@ def is_running(service):
             f.write("The time is now " + time.ctime() + 'Service is not running')
         return False
 
-#startService function attemts to start a service
-def startService(service):
+#start_service function attemts to start a service
+def start_service(service):
     print 'INFO: Attemtping to start'
     cmd = 'service %s start' % (service)
     proc = subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE)
