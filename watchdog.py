@@ -13,8 +13,7 @@ from configparser import ConfigParser
 probing = 5
 cfg = ConfigParser()
 cfg.read('config.ini')
-#run_as_daemon = cfg.getboolean('daemonization','run_as_daemon')
-run_as_daemon = True
+run_as_daemon = cfg.getboolean('daemonization','run_as_daemon')
 log_path = cfg.get('logging','logPath')
 freq = float(cfg.get('watchdog','time'))
 retry = float(cfg.get('watchdog','retry'))
