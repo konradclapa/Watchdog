@@ -10,13 +10,13 @@ import daemon
 from configparser import ConfigParser
 
 #Read configuration
-probing = 5
 cfg = ConfigParser()
 cfg.read('config.ini')
 run_as_daemon = cfg.getboolean('daemonization','run_as_daemon')
 log_path = cfg.get('logging','logPath')
 freq = float(cfg.get('watchdog','time'))
 retry = float(cfg.get('watchdog','retry'))
+probing = float(cfg.get('watchdog','probing'))
 service = cfg.get('watchdog','service')
 mail_user = cfg.get('notification','mail_user')
 mail_password = cfg.get('notification','mail_password')
@@ -24,8 +24,6 @@ to = cfg.get('notification','to')
 subject = cfg.get('notification','subject')
 body = cfg.get('notification','body')
 host = os.uname()[1]
-
-
 
 #write_log writes to a defined log
 def write_log(serverity, message):
