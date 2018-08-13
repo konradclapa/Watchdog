@@ -94,22 +94,19 @@ def send_mail(mail_user,mail_password,body,subject,to):
         print 'Something went wrong...'
         
 
+def run_daemon():
+    while True:
+        watchdog(service,retry,freq)
+        time.sleep(60)
+
+def run():
+    with daemon.DaemonContext():
+        run_daemon()
+
 if not (run_as_daemon): 
 	while True:
 	       	watchdog(service,retry,freq)
 
-
-def do_something():
-    while True:
-        watchdog(service,retry,freq)
-        with open("/tmp/current_time.txt", "w") as f:
-            f.write("The time is now " + time.ctime())
-        time.sleep(5)
-
-def run():
-    with daemon.DaemonContext():
-        do_something()
-
-if (run_as_daemon):
+else:
 	if __name__ == "__main__":
     		run()
