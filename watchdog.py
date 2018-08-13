@@ -98,6 +98,7 @@ def send_mail(mail_user,mail_password,body,subject,to):
 
 #run_daemonized_watchdog functions runs watchdog in daemon mode
 def run_daemonized_watchdog():
+    print 'running as a daemon'
     with daemon.DaemonContext():
         run_watchdog()
 
