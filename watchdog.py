@@ -23,9 +23,9 @@ mail_password = cfg.get('notification','mail_password')
 to = cfg.get('notification','to')
 subject = cfg.get('notification','subject')
 body = cfg.get('notification','body')
-
-
 host = os.uname()[1]
+
+
 #Setup logging file
 if not os.path.exists(logPath):
         os.mknod(logPath)
@@ -35,6 +35,9 @@ formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 hdlr.setFormatter(formatter)
 logger.addHandler(hdlr)
 logger.setLevel(logging.INFO)
+
+
+
 
 #watchdog function restart service if it is down
 def watchdog(service, retry, freq):
@@ -85,7 +88,7 @@ def startService(service):
 def send_mail(mail_user,mail_password,body,subject,to):
     sent_from = mail_user
 #    email_text = "Watchdog Alert: %s" %(body) 
-    email_text = """ 
+    email_text = """/
     From: %s  
     To: %s  
     Subject: %s
@@ -99,7 +102,7 @@ def send_mail(mail_user,mail_password,body,subject,to):
         server.close()
         print 'INFO: Email sent!'
     except:
-        print 'ERROR: Something went wrong...'
+        print 'ERROR: It was not possible to send mail please check configuration'
 
 #run_daemonized_watchdog functions runs watchdog in daemon mode
 def run_daemonized_watchdog():
