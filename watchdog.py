@@ -10,6 +10,7 @@ import daemon
 from configparser import ConfigParser
 
 #Read configuration
+probing = 5
 cfg = ConfigParser()
 cfg.read('config.ini')
 run_as_daemon = cfg.getboolean('daemonization','run_as_daemon')
@@ -34,6 +35,8 @@ formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 hdlr.setFormatter(formatter)
 logger.addHandler(hdlr)
 logger.setLevel(logging.INFO)
+
+#watchdog function restart service if it is down
 def watchdog(service, retry, freq):
     if not (is_running(service)):
         i = 0
@@ -52,6 +55,8 @@ def watchdog(service, retry, freq):
                 send_mail(mail_user,mail_password,resulttext,subject,to)
 #Sleep for t seconds
             time.sleep(freq)
+
+#is_running function checks if service is running           
 def is_running(service):
     print ("Starting function is_running with paramter:" + service)
     cmd = 'service %s status' % (service)
@@ -69,11 +74,16 @@ def is_running(service):
 	with open("/tmp/log.txt", "a") as f:
             f.write("The time is now " + time.ctime() + 'Service is not running')
         return False
+
+#startService function attemts to start a service
 def startService(service):
     print 'Attemtping to start'
     cmd = 'service %s start' % (service)
     proc = subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE)
     proc.communicate()
+
+
+#sen_mail function sendes emails using prefedefined account   
 def send_mail(mail_user,mail_password,body,subject,to):
     sent_from = mail_user
 #    email_text = "Watchdog Alert: %s" %(body) 
@@ -92,21 +102,21 @@ def send_mail(mail_user,mail_password,body,subject,to):
         print 'Email sent!'
     except:
         print 'Something went wrong...'
-        
 
-def run_daemon():
-    while True:
-        watchdog(service,retry,freq)
-        time.sleep(60)
-
-def run():
+#run_daemonized_watchdog functions runs watchdog in daemon mode
+def run_daemonized_watchdog():
     with daemon.DaemonContext():
-        run_daemon()
+        run_watchdog()
 
-if not (run_as_daemon): 
-	while True:
-	       	watchdog(service,retry,freq)
+#run_watchdog runs watchdog every 5 seconds
+def run_watchdog()
+     while True:
+        watchdog(service,retry,freq)
+        time.sleep(probing)
 
+if not (run_as_daemon):
+    run_watchdog()
 else:
-	if __name__ == "__main__":
-    		run()
+    run_daemonized_watchdog()
+
+
