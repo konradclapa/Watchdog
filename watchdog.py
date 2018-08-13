@@ -109,11 +109,12 @@ def run_daemonized_watchdog():
         run_watchdog()
 
 #run_watchdog runs watchdog every 5 seconds
-def run_watchdog()
+def run_watchdog():
      while True:
         watchdog(service,retry,freq)
         time.sleep(probing)
 
+#starts the scritp with check if script should be daemonized
 if not (run_as_daemon):
     run_watchdog()
 else:
