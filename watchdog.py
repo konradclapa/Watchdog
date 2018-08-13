@@ -14,7 +14,7 @@ probing = 5
 cfg = ConfigParser()
 cfg.read('config.ini')
 run_as_daemon = cfg.getboolean('daemonization','run_as_daemon')
-logPath = cfg.get('logging','logPath')
+log_path = cfg.get('logging','logPath')
 freq = float(cfg.get('watchdog','time'))
 retry = float(cfg.get('watchdog','retry'))
 service = cfg.get('watchdog','service')
@@ -25,19 +25,11 @@ subject = cfg.get('notification','subject')
 body = cfg.get('notification','body')
 host = os.uname()[1]
 
-
-#Setup logging file
-if not os.path.exists(logPath):
-        os.mknod(logPath)
-logger = logging.getLogger ('watchdog')
-hdlr = logging.FileHandler(logPath)
-formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-hdlr.setFormatter(formatter)
-logger.addHandler(hdlr)
-logger.setLevel(logging.INFO)
-
-
-
+#write_log writes to a defined log
+def write_log(serverity, message):
+    f=open(log_path, "a+")
+    f.write(time.ctime() + " " + serverity + ": " + message + "\n")
+    f.close() 
 
 #watchdog function restart service if it is down
 def watchdog(service, retry, freq):
@@ -45,16 +37,16 @@ def watchdog(service, retry, freq):
         i = 0
         while i < retry:
             i = i + 1
-            logger.info('Attempt nr %d to start %s.' % (i,service))
+            write_log("INFO", 'Attempt nr %d to start %s.' % (i,service))
             startService(service)
             if (is_running(service)):
-                resulttext = 'Attempt nr %d to start service %s host: %s was SUCCESFUL' % (i,service,host)
-                logger.info(resulttext)
+                resulttext = 'Attempt nr %d to start service %s host: %s was SUCCESFULL' % (i,service,host)
+                write_log("INFO", resulttext)
                 send_mail(mail_user,mail_password,resulttext,subject,to)
                 break
             else:
-                resulttext = 'Attempt nr %d to start service %s host: %s was UNSUCCESFUL' % (i,service,host)
-                logger.error(resulttext)
+                resulttext = 'Attempt nr %d to start service %s host: %s was UNSUCCESFULL' % (i,service,host)
+                write_log("ERRROR", resulttext)
                 send_mail(mail_user,mail_password,resulttext,subject,to)
 #Sleep for t seconds
             time.sleep(freq)
@@ -70,7 +62,7 @@ def is_running(service):
     else:
         resulttext = 'Service %s is not running on host: %s' % (service,host)
 	time.sleep(freq)
-        logger.error(resulttext)
+        write_log("ERROR", resulttext)
         send_mail(mail_user,mail_password,resulttext,subject,to)
 	with open("/tmp/log.txt", "a") as f:
             f.write("The time is now " + time.ctime() + 'Service is not running')
