@@ -8,6 +8,8 @@ import os
 import smtplib
 import daemon
 from configparser import ConfigParser
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEText import MIMEText
 
 #Read configuration
 cfg = ConfigParser()
@@ -74,25 +76,26 @@ def start_service(service):
     proc = subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE)
     proc.communicate()
 
-
 #sen_mail function sendes emails using predefined account   
 def send_mail(mail_user,mail_password,body,subject,to):
     sent_from = mail_user
-#    email_text = "Watchdog Alert: %s" %(body) 
-    email_text = """/
-    From: %s  
-    To: %s  
-    Subject: %s
-    %s
-    """ % (sent_from, to, subject, body)
+    msg = MIMEMultipart()
+    msg['From'] = sent_from
+    msg['To'] = to
+    msg['Subject'] = subject
+    msg.attach(MIMEText(body, 'plain'))
     try:
-        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
         server.login(mail_user, mail_password)
-        server.sendmail(sent_from, to, email_text)
-        server.close()
-        print 'INFO: Email sent!'
+        mail_text = msg.as_string()
+        server.sendmail(sent_from, to, mail_text)
+        server.quit()
+        print 'Mail sent'
+        write_log("INFO", "Mail notification sent")
     except:
-        print 'ERROR: It was not possible to send mail please check configuration'
+        print 'Failed to send mail'
+        write_log("ERROR", "Failed to send mail notification")
 
 #run_daemonized_watchdog functions runs watchdog in daemon mode
 def run_daemonized_watchdog():
