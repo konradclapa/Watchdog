@@ -24,7 +24,6 @@ mail_user = cfg.get('notification','mail_user')
 mail_password = cfg.get('notification','mail_password')
 to = cfg.get('notification','to')
 subject = cfg.get('notification','subject')
-body = cfg.get('notification','body')
 host = os.uname()[1]
 
 #write_log writes to a defined log
