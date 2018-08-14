@@ -26,12 +26,13 @@ body = cfg.get('notification','body')
 host = os.uname()[1]
 
 #write_log writes to a defined log
-def write_log(serverity, message):
+def write_log(severity, message):
     f=open(log_path, "a+")
-    f.write(time.ctime() + " " + serverity + ": " + message + "\n")
+    f.write(time.ctime() + " " + severity + ": " + message + "\n")
     f.close() 
 
-#watchdog function restart service if it is down
+#watchdog function restarts service if it is down. 
+#Logs numer of attempts and results, sends email whether service have been or could not be started and attempts
 def watchdog(service, retry, freq):
     if not (is_running(service)):
         i = 0
@@ -46,7 +47,7 @@ def watchdog(service, retry, freq):
                 break
             else:
                 resulttext = 'Attempt nr %d to start service %s host: %s was UNSUCCESSFUL' % (i,service,host)
-                write_log("ERRROR", resulttext)
+                write_log("ERROR", resulttext)
                 send_mail(mail_user,mail_password,resulttext,subject,to)
 #Sleep for t seconds
             time.sleep(freq)
@@ -64,11 +65,9 @@ def is_running(service):
 	time.sleep(freq)
         write_log("ERROR", resulttext)
         send_mail(mail_user,mail_password,resulttext,subject,to)
-	with open("/tmp/log.txt", "a") as f:
-            f.write("The time is now " + time.ctime() + 'Service is not running')
         return False
 
-#start_service function attemts to start a service
+#start_service function attempts to start a service
 def start_service(service):
     print 'INFO: Attemtping to start'
     cmd = 'service %s start' % (service)
@@ -76,7 +75,7 @@ def start_service(service):
     proc.communicate()
 
 
-#sen_mail function sendes emails using prefedefined account   
+#sen_mail function sendes emails using predefined account   
 def send_mail(mail_user,mail_password,body,subject,to):
     sent_from = mail_user
 #    email_text = "Watchdog Alert: %s" %(body) 
@@ -88,7 +87,6 @@ def send_mail(mail_user,mail_password,body,subject,to):
     """ % (sent_from, to, subject, body)
     try:
         server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-        #server.ehlo()
         server.login(mail_user, mail_password)
         server.sendmail(sent_from, to, email_text)
         server.close()
@@ -98,7 +96,8 @@ def send_mail(mail_user,mail_password,body,subject,to):
 
 #run_daemonized_watchdog functions runs watchdog in daemon mode
 def run_daemonized_watchdog():
-    print 'running as a daemon'
+    resulttext = "Starting Watchdog as a Daemon"
+    write_log("INFO", resulttext)
     with daemon.DaemonContext():
         run_watchdog()
 
@@ -109,9 +108,7 @@ def run_watchdog():
         watchdog(service,retry,freq)
         time.sleep(probing)
 
-print (run_as_daemon)
-
-#starts the scritp with check if script should be daemonized
+#starts the scrpt with check if script should be daemonized
 if not (run_as_daemon):
     run_watchdog()
 else:
