@@ -51,8 +51,7 @@ def watchdog(service, retry, freq):
                 resulttext = 'Attempt nr %d to start service %s host: %s was UNSUCCESSFUL' % (i,service,host)
                 write_log("ERROR", resulttext)
                 send_mail(mail_user,mail_password,resulttext,subject,to)
-#Sleep for t seconds
-            time.sleep(freq)
+                time.sleep(freq)
 
 #is_running function checks if service is running           
 def is_running(service):
@@ -64,7 +63,7 @@ def is_running(service):
         return True
     else:
         resulttext = 'Service %s is not running on host: %s' % (service,host)
-	time.sleep(freq)
+    time.sleep(freq)
         write_log("ERROR", resulttext)
         send_mail(mail_user,mail_password,resulttext,subject,to)
         return False
@@ -91,10 +90,8 @@ def send_mail(mail_user,mail_password,body,subject,to):
         mail_text = msg.as_string()
         server.sendmail(sent_from, to, mail_text)
         server.quit()
-        print 'Mail sent'
         write_log("INFO", "Mail notification sent")
     except:
-        print 'Failed to send mail'
         write_log("ERROR", "Failed to send mail notification")
 
 #run_daemonized_watchdog functions runs watchdog in daemon mode
@@ -107,7 +104,7 @@ def run_daemonized_watchdog():
 
 #run_watchdog runs watchdog every 5 seconds
 def run_watchdog():
-     while True:
+    while True:
         watchdog(service,retry,freq)
         time.sleep(probing)
 
