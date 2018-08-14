@@ -63,7 +63,6 @@ def is_running(service):
         return True
     else:
         resulttext = 'Service %s is not running on host: %s' % (service,host)
-    time.sleep(freq)
         write_log("ERROR", resulttext)
         send_mail(mail_user,mail_password,resulttext,subject,to)
         return False
