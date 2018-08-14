@@ -34,7 +34,7 @@ supported_platform = 'Ubuntu'
 #Prechecks functions checks OS and Python version
 def prechecks(supported_python, supported_platform):
     python_version = str(platform.python_version())
-    platform_version = str(platform.system())
+    platform_version = str(platform.linux_distribution())
     if not python_version.startswith(supported_python):
         print 'WARRNING: Python version %s is not fully tested - issues might occur with running the Watchdog' % (python_version)
     else:
