@@ -38,11 +38,11 @@ def prechecks(supported_python, supported_platform):
     if not python_version.startswith(supported_python):
         print 'WARRNING: Python version %s is not fully tested - issues might occur with running the Watchdog' % (python_version)
     else:
-        print 'INFO: Python version is %s is tested and supported' % (python_version)
+        print 'INFO: Python version %s is tested and supported' % (python_version)
     if not supported_platform in platform_version:
         print 'WARRINING: The platform %s is not fully tested - issues might occur with running the Watchdog' % (platform_version)
     else:
-        print 'INFO: The platform version is %s is tested and supported' % (platform_version)
+        print 'INFO: The platform version %s is tested and supported' % (platform_version)
 
 
 #Write_log writes to a defined log
